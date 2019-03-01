@@ -1,44 +1,38 @@
 'use strict'
 
-//importo el modelo
-var userModel = require('../models/usuario');
-var path = require('path');
-var bycrypt= require('bcryptjs');
-
+var medicoModel = require('../models/medico');
 var controller = {
-
     // =============================================================
     // Obtener todos los usarios 
     // =============================================================                    
-    getUsers: function(req, res) {
-        //modeloProject.find({year: 2019})
-        // lo hago asi, porque no quiero que se muestre el attr: contraseña
-        
+    getMedico: function(req, res) {
         var desde = req.query.desde || 0;
         desde = Number(desde);
 
-        userModel.find({}, 'nombres apellidos correo avatar rol')
+        medicoModel.find({})
             .skip(desde)
-            .limit(5)
+            .limit(3)
+            .populate('usuario', 'nombres correo')
+            .populate('hospital')
             .exec(
                 (err, data) => {
                     if( err ){
                         return res.status(500).json({
                             ok: false,
-                            mensaje: 'Error cargando usuarios',
+                            mensaje: 'Error cargando medicos',
                             errors: err
                         });  
                     }
 
                     if(!data) {
-                        return res.status(500).json({
+                        return res.status(404).json({
                             ok: false,
-                            mensaje: 'No hay proyectos que mostrar',
+                            mensaje: 'No hay medicos que mostrar',
                             errors: err
                         });
                     } 
 
-                    userModel.count({}, (err, conteo) =>{
+                    medicoModel.count({}, (err, conteo) =>{
                         
                         if( err ){
                             return res.status(500).json({
@@ -47,34 +41,30 @@ var controller = {
                                 errors: err
                             });  
                         }
-
                         res.status(200).json({
                             ok: true,
                             Total: conteo,
-                            Usuarios: data                        
+                            Medico: data                        
                         });
                     });
-
                     
-        });
+            });
     },
     // =============================================================
-    // Crear usuario nuevo 
+    // Crear hosital 
     // =============================================================                    
-    saveUsers: function(req, res) {
+    saveMedico: function(req, res) {
         
         var params = req.body;
 
-        var auxUser = new userModel({
-            nombres: params.nombres,
-            apellidos: params.apellidos,
-            correo: params.correo,
-            contrasena: bycrypt.hashSync( params.contrasena, 10),
-            avatar: params.avatar,
-            rol: params.rol
+        var auxMedico = new medicoModel({
+            nombre: params.nombre,
+            img: params.img,
+            usuario: params.usuario,
+            hospital: params.hospital
         });
         
-        auxUser.save( (err, data) => {
+        auxMedico.save( (err, data) => {
             if( err ){
                 return res.status(500).json({
                     ok: false,
@@ -91,22 +81,21 @@ var controller = {
                 });
             } 
 
-            data.contrasena = ':)';
             res.status(201).json({
                 ok: true,
-                Usuarios: data,
+                Medico: data,
                 upUser: req.superUsuario
             });            
         });
     },
     // =============================================================
-    // ACtualizar usuario nuevo 
+    // ACtualizar medico 
     // =============================================================                    
-    updateUsers: function ( req, res ){
-        var user_id = req.params.id;
+    updateMedico: function ( req, res ){
+        var medico_id = req.params.id;
         var data_update = req.body;
 
-        userModel.findByIdAndUpdate(user_id, data_update, {new: true}, (err, data) => {
+        medicoModel.findByIdAndUpdate(medico_id, data_update, {new: true}, (err, data) => {
             if( err ){
                 return res.status(500).json({
                     ok: false,
@@ -117,7 +106,7 @@ var controller = {
             if(!data) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: 'No se pudo actualizar:  '+user_id+' , no existe',
+                    mensaje: 'No se pudo actualizar:  '+medico_id+' , no existe',
                     errors: err
                 });
             }
@@ -125,18 +114,18 @@ var controller = {
             data.contrasena = ':)'
             res.status(200).json({
                 ok: true,
-                Usuario: data
+                Hospital: data
             }); 
             
         });
     },
     // =============================================================
-    // Borrar un usuario por id
+    // Borrar un medico por id
     // =============================================================
-    deleteUsers: function ( req, res ) {
-        var user_id = req.params.id;
+    deleteMedico: function ( req, res ) {
+        var medico_id = req.params.id;
 
-        userModel.findByIdAndRemove(user_id, (err, data) => {
+        medicoModel.findByIdAndRemove(medico_id, (err, data) => {
             if( err ){
                 return res.status(500).json({
                     ok: false,
@@ -147,7 +136,7 @@ var controller = {
             if(!data) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: 'No se pudo eliminar: '+user_id+' , no existe',
+                    mensaje: 'No se pudo eliminar: '+medico_id+' , no existe',
                     errors: { message: err}
                 });
             }
@@ -155,11 +144,10 @@ var controller = {
             data.contrasena = ':)'
             res.status(200).json({
                 ok: true,
-                Usuario: data
+                Hospital: data
             }); 
         });
     }
-
 }
 
 module.exports = controller;

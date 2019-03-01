@@ -3,13 +3,21 @@
 var express = require('express');
 var bodyparse = require('body-parser');
 
+
+
 var app = express();
 
-// cargar archivos de rutas -> luego ir a montar la ruta (4.)
+// =============================================================
+// Cargar archivos de rutas -> luego ir a montar la ruta (4.)
+// =============================================================
+
 var loginController = require('./controllers/login');
-var userRoutes = require('./routes/usuario')
-
-
+var userRoutes = require('./routes/usuario.routes');
+var hospitalRoutes = require('./routes/hospital.routes');
+var medicoRouter = require('./routes/medico.routes');
+var busquedaRoutes = require('./routes/busqueda.routes');
+var uploadRoutes = require('./routes/upload.routes');
+var getImagenes = require('./routes/getImagen.routes');
 
 
 // middlewares
@@ -32,7 +40,7 @@ app.use((req, res, next) => {
 
 
 // =============================================================
-// Rutas del sever
+// Rutas del sever (4.)
 // =============================================================                    
 
 // default
@@ -43,11 +51,14 @@ app.get('/', (req, res, next) => {
     });
 });
 
-// login
-app.post('/login', loginController.loginApp);
-
-// Usuarios
+// aplicacion-secciones-paginas
+app.post('/api/login', loginController.loginApp);
 app.use('/api', userRoutes);
+app.use('/api', hospitalRoutes);
+app.use('/api', medicoRouter);
+app.use('/api', busquedaRoutes);
+app.use('/api', uploadRoutes);
+app.use('/api', getImagenes);
 
 // export
 module.exports = app;

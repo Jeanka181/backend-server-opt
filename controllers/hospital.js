@@ -1,44 +1,37 @@
 'use strict'
 
-//importo el modelo
-var userModel = require('../models/usuario');
-var path = require('path');
-var bycrypt= require('bcryptjs');
-
+var hospitalModel = require('../models/hospital');
 var controller = {
-
     // =============================================================
-    // Obtener todos los usarios 
+    // Obtener todos los hospitales 
     // =============================================================                    
-    getUsers: function(req, res) {
-        //modeloProject.find({year: 2019})
-        // lo hago asi, porque no quiero que se muestre el attr: contraseña
-        
+    getHospitales: function(req, res) {
         var desde = req.query.desde || 0;
         desde = Number(desde);
 
-        userModel.find({}, 'nombres apellidos correo avatar rol')
+        hospitalModel.find({})
             .skip(desde)
             .limit(5)
+            .populate('usuario', 'nombres correo')
             .exec(
                 (err, data) => {
                     if( err ){
                         return res.status(500).json({
                             ok: false,
-                            mensaje: 'Error cargando usuarios',
+                            mensaje: 'Error cargando hospitales',
                             errors: err
                         });  
                     }
 
                     if(!data) {
-                        return res.status(500).json({
+                        return res.status(404).json({
                             ok: false,
-                            mensaje: 'No hay proyectos que mostrar',
+                            mensaje: 'No hay hospitales que mostrar',
                             errors: err
                         });
                     } 
 
-                    userModel.count({}, (err, conteo) =>{
+                    hospitalModel.count({}, (err, conteo) =>{
                         
                         if( err ){
                             return res.status(500).json({
@@ -51,30 +44,26 @@ var controller = {
                         res.status(200).json({
                             ok: true,
                             Total: conteo,
-                            Usuarios: data                        
+                            Hospitales: data                        
                         });
                     });
-
                     
-        });
+            });
     },
     // =============================================================
-    // Crear usuario nuevo 
+    // Crear hosital 
     // =============================================================                    
-    saveUsers: function(req, res) {
+    saveHospitales: function(req, res) {
         
         var params = req.body;
 
-        var auxUser = new userModel({
-            nombres: params.nombres,
-            apellidos: params.apellidos,
-            correo: params.correo,
-            contrasena: bycrypt.hashSync( params.contrasena, 10),
-            avatar: params.avatar,
-            rol: params.rol
+        var auxHospital = new hospitalModel({
+            nombre: params.nombre,
+            img: params.img,
+            usuario: params.usuario
         });
         
-        auxUser.save( (err, data) => {
+        auxHospital.save( (err, data) => {
             if( err ){
                 return res.status(500).json({
                     ok: false,
@@ -91,22 +80,21 @@ var controller = {
                 });
             } 
 
-            data.contrasena = ':)';
             res.status(201).json({
                 ok: true,
-                Usuarios: data,
+                Hospital: data,
                 upUser: req.superUsuario
             });            
         });
     },
     // =============================================================
-    // ACtualizar usuario nuevo 
+    // ACtualizar hospital 
     // =============================================================                    
-    updateUsers: function ( req, res ){
-        var user_id = req.params.id;
+    updateHospital: function ( req, res ){
+        var hosp_id = req.params.id;
         var data_update = req.body;
 
-        userModel.findByIdAndUpdate(user_id, data_update, {new: true}, (err, data) => {
+        hospitalModel.findByIdAndUpdate(hosp_id, data_update, {new: true}, (err, data) => {
             if( err ){
                 return res.status(500).json({
                     ok: false,
@@ -117,7 +105,7 @@ var controller = {
             if(!data) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: 'No se pudo actualizar:  '+user_id+' , no existe',
+                    mensaje: 'No se pudo actualizar:  '+hosp_id+' , no existe',
                     errors: err
                 });
             }
@@ -125,18 +113,18 @@ var controller = {
             data.contrasena = ':)'
             res.status(200).json({
                 ok: true,
-                Usuario: data
+                Hospital: data
             }); 
             
         });
     },
     // =============================================================
-    // Borrar un usuario por id
+    // Borrar un hospital por id
     // =============================================================
-    deleteUsers: function ( req, res ) {
-        var user_id = req.params.id;
+    deleteHospital: function ( req, res ) {
+        var hosp_id = req.params.id;
 
-        userModel.findByIdAndRemove(user_id, (err, data) => {
+        hospitalModel.findByIdAndRemove(hosp_id, (err, data) => {
             if( err ){
                 return res.status(500).json({
                     ok: false,
@@ -147,7 +135,7 @@ var controller = {
             if(!data) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: 'No se pudo eliminar: '+user_id+' , no existe',
+                    mensaje: 'No se pudo eliminar: '+hosp_id+' , no existe',
                     errors: { message: err}
                 });
             }
@@ -155,11 +143,10 @@ var controller = {
             data.contrasena = ':)'
             res.status(200).json({
                 ok: true,
-                Usuario: data
+                Hospital: data
             }); 
         });
     }
-
 }
 
 module.exports = controller;
