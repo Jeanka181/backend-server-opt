@@ -36,6 +36,10 @@ var usuarioSchema = new Schema({
         default: 'USER_ROLE',
         enum: roles
     },
+    google: {
+        type: Boolean,
+        default: false
+    }
 });
 
 usuarioSchema.plugin(uniqueValidator, {

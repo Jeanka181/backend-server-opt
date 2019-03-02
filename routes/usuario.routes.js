@@ -3,7 +3,8 @@
 
 var express = require('express');
 var usuarioController = require('../controllers/usuario');
-// var loginController = require('../controllers/login');
+
+// middleware comun para acciones privadas en todas las colecciones;
 var autenticacion = require('../middlewars/autenticacion');
 
 

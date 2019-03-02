@@ -11,7 +11,7 @@ var app = express();
 // Cargar archivos de rutas -> luego ir a montar la ruta (4.)
 // =============================================================
 
-var loginController = require('./controllers/login');
+var loginRoutes = require('./routes/login.routes');
 var userRoutes = require('./routes/usuario.routes');
 var hospitalRoutes = require('./routes/hospital.routes');
 var medicoRouter = require('./routes/medico.routes');
@@ -52,7 +52,7 @@ app.get('/', (req, res, next) => {
 });
 
 // aplicacion-secciones-paginas
-app.post('/api/login', loginController.loginApp);
+app.use('/api', loginRoutes);
 app.use('/api', userRoutes);
 app.use('/api', hospitalRoutes);
 app.use('/api', medicoRouter);
