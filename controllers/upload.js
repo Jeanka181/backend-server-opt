@@ -99,9 +99,9 @@ function updateUsuarios(id, nameFile, filePath, path_final, res) {
         // guardo aux con imagen antigua, antes quese pierda
         var pathImagenAntigua;
         if(data.img!=""){
-            pathImagenAntigua = 'uploads\\img\\medicos\\'+ data.img;
+            pathImagenAntigua = 'uploads\\img\\usuarios\\'+ data.avatar;
         }else{
-            pathImagenAntigua = 'uploads\\img\\medicos\\none.png';
+            pathImagenAntigua = 'uploads\\img\\usuarios\\none.png';
         }
         // se guarda la nueva imagen
         data.avatar = nameFile;

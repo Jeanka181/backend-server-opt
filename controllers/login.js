@@ -59,7 +59,7 @@ var app = {
                     var usuario_nuevo = new userModel();
                     
                     usuario_nuevo.nombres =  google_user.nombre;
-                    usuario_nuevo.apellidos = 'G- '+ google_user.nombre;
+                    usuario_nuevo.apellidos = 'G-API: '+ google_user.nombre;
                     usuario_nuevo.correo = google_user.email;
                     usuario_nuevo.contrasena = ':)';
                     usuario_nuevo.avatar = google_user.img;

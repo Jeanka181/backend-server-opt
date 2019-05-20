@@ -7,6 +7,11 @@ var controller = {
     obtenerImagenes: function( req, res){
         var coleccion = req.params.coleccion;
         var id = req.params.img;
+        var auxExtencion = id.split('\.');
+        if ( auxExtencion[1] === 'jpeg' ) {
+            auxExtencion[1] = '.jpg';
+            id=auxExtencion[0]+auxExtencion[1];
+        }
 
         var pathImagen = path.resolve( __dirname, `../uploads/img/${ coleccion }/${ id }` )
  

@@ -28,7 +28,7 @@ var usuarioSchema = new Schema({
     avatar: {
         type: String,
         required: false,
-        default: 'none.png'
+        // default: 'none.png'
     },
     rol: {
         type: String,

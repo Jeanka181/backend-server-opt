@@ -11,7 +11,8 @@ var autenticacion = require('../middlewars/autenticacion');
 var router = express.Router();
 // router.post('/login', loginController.loginApp);
 router.get('/usuarios', usuarioController.getUsers );
-router.post('/usuario', autenticacion.validateToken, usuarioController.saveUsers );
+// router.post('/usuario', autenticacion.validateToken, usuarioController.saveUsers );
+router.post('/usuario', usuarioController.saveUsers );
 router.put('/usuario/:id', autenticacion.validateToken, usuarioController.updateUsers );
 router.delete('/usuario/:id', autenticacion.validateToken, usuarioController.deleteUsers );
 

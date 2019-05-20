@@ -6,6 +6,18 @@ var bodyparse = require('body-parser');
 
 
 var app = express();
+// =============================================================
+// CORS
+// https://enable-cors.org/server_expressjs.html      
+// =============================================================
+// Configurar cabeceras y cors
+
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+});
 
 // =============================================================
 // Cargar archivos de rutas -> luego ir a montar la ruta (4.)
@@ -23,20 +35,6 @@ var getImagenes = require('./routes/getImagen.routes');
 // middlewares
 app.use(bodyparse.urlencoded({extended:false}));
 app.use(bodyparse.json());
-
-
-// =============================================================
-// CORS
-//      https://victorroblesweb.es/2018/01/31/configurar-acceso-cors-en-nodejs/
-// =============================================================
-// Configurar cabeceras y cors
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
-    next();
-});
 
 
 // =============================================================
